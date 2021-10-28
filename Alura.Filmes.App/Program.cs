@@ -13,7 +13,23 @@ namespace Alura.Filmes.App
         {
             //IncluirAtor();
             //ConsultarAtores();
+            //ListarOs10AtoresModificadosRecentemente();
 
+            using (var contexto = new AluraFilmesContexto())
+            {
+                contexto.LogSQLToConsole();
+
+                foreach(var filme in contexto.Filmes)
+                {
+                    Console.WriteLine(filme);
+                }
+            }
+
+            Console.ReadLine();
+        }
+
+        private static void ListarOs10AtoresModificadosRecentemente()
+        {
             using (var contexto = new AluraFilmesContexto())
             {
                 contexto.LogSQLToConsole();
@@ -28,8 +44,6 @@ namespace Alura.Filmes.App
                     Console.WriteLine(ator + " - " + contexto.Entry(ator).Property("last_update").CurrentValue);
                 }
             }
-
-            Console.ReadLine();
         }
 
         private static void IncluirAtor()
