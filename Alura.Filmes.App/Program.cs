@@ -14,18 +14,82 @@ namespace Alura.Filmes.App
             //IncluirAtor();
             //ConsultarAtores();
             //ListarOs10AtoresModificadosRecentemente();
+            //ConsultarFilmes();
+            //ConsultarElenco();
+            //ElencoDeUmFilme();
 
             using (var contexto = new AluraFilmesContexto())
             {
                 contexto.LogSQLToConsole();
 
-                foreach(var filme in contexto.Filmes)
+                var categorias = contexto.Categorias
+                    .Include(c => c.Filmes)
+                    .ThenInclude(fc => fc.Filme);
+
+                foreach (var c in categorias)
+                {
+                    Console.WriteLine("");
+                    Console.WriteLine($"Filmes da categoria {c}:");
+                    foreach (var fc in c.Filmes)
+                    {
+                        Console.WriteLine(fc.Filme);
+                    }
+                }
+
+            }
+
+            Console.ReadLine();
+        }
+
+        private static void ElencoDeUmFilme()
+        {
+            using (var contexto = new AluraFilmesContexto())
+            {
+                contexto.LogSQLToConsole();
+
+                var filme = contexto.Filmes
+                    .Include(f => f.Atores)
+                    .ThenInclude(fa => fa.Ator)
+                    .First();
+
+                Console.WriteLine(filme);
+                Console.WriteLine("Elenco");
+
+                foreach (var ator in filme.Atores)
+                {
+                    Console.WriteLine(ator.Ator);
+                }
+            }
+        }
+
+        private static void ConsultarElenco()
+        {
+            using (var contexto = new AluraFilmesContexto())
+            {
+                contexto.LogSQLToConsole();
+
+                foreach (var item in contexto.Elenco)
+                {
+                    var entidade = contexto.Entry(item);
+                    var filmId = entidade.Property("film_id").CurrentValue;
+                    var actorId = entidade.Property("actor_id").CurrentValue;
+                    var lastUpd = entidade.Property("last_update").CurrentValue;
+                    Console.WriteLine($"Filme {filmId}, Ator {actorId}, LastUpdate: {lastUpd}");
+                }
+            }
+        }
+
+        private static void ConsultarFilmes()
+        {
+            using (var contexto = new AluraFilmesContexto())
+            {
+                contexto.LogSQLToConsole();
+
+                foreach (var filme in contexto.Filmes)
                 {
                     Console.WriteLine(filme);
                 }
             }
-
-            Console.ReadLine();
         }
 
         private static void ListarOs10AtoresModificadosRecentemente()

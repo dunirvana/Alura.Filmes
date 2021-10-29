@@ -24,6 +24,7 @@ namespace Alura.Filmes.App.Dados.Config
 
             builder
                  .Property(a => a.UltimoNome)
+                 .HasColumnName("last_name")
                  .HasColumnType("varchar(45)")
                  .IsRequired();
 
