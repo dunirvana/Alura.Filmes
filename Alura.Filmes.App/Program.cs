@@ -19,10 +19,51 @@ namespace Alura.Filmes.App
             //ElencoDeUmFilme();
             //FilmesDeUmaCategoria();
             //Consultaridiomas();
+            //ConsultarFilmesEIdiomas();
+            //TestandoChaveUnica();
 
-            ConsultarFilmesEIdiomas();
+            TestandoRestricaoCheck();
 
             Console.ReadLine();
+        }
+
+        private static void TestandoRestricaoCheck()
+        {
+            using (var contexto = new AluraFilmesContexto())
+            {
+                contexto.LogSQLToConsole();
+
+                var idioma = new Idioma { Nome = "English" };
+
+                var filme = new Filme();
+                filme.Titulo = "Senhor dos Aneis";
+                filme.Duracao = 120;
+                filme.AnoLancamento = "2000";
+                filme.Classificacao = "Qualquer";
+                filme.IdiomaFalado = idioma;
+                contexto.Entry(filme).Property("last_update").CurrentValue = DateTime.Now;
+
+                contexto.Filmes.Add(filme);
+                contexto.SaveChanges();
+            }
+        }
+
+        private static void TestandoChaveUnica()
+        {
+            using (var contexto = new AluraFilmesContexto())
+            {
+
+                contexto.LogSQLToConsole();
+
+                var ator1 = new Ator { PrimeiroNome = "Emma", UltimoNome = "Watson" };
+                var ator2 = new Ator { PrimeiroNome = "Emma", UltimoNome = "Watson" };
+                contexto.Atores.AddRange(ator1, ator2);
+                contexto.SaveChanges();
+
+                var emmaWatson = contexto.Atores
+                    .Where(a => a.PrimeiroNome == "Emma" && a.UltimoNome == "Watson");
+                Console.WriteLine($"Total de atores encontrados: {emmaWatson.Count()}.");
+            }
         }
 
         private static void ConsultarFilmesEIdiomas()

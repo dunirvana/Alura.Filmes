@@ -137,6 +137,14 @@
     <Compile Include="Migrations\20211028155843_Inicial.designer.cs">
       <DependentUpon>20211028155843_Inicial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\20211103122427_atualizacao.cs" />
+    <Compile Include="Migrations\20211103122427_atualizacao.designer.cs">
+      <DependentUpon>20211103122427_atualizacao.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20211103123723_checkconstraint.cs" />
+    <Compile Include="Migrations\20211103123723_checkconstraint.designer.cs">
+      <DependentUpon>20211103123723_checkconstraint.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\AluraFilmesContextoModelSnapshot.cs" />
     <Compile Include="Negocio\Ator.cs" />
     <Compile Include="Negocio\Categoria.cs" />
