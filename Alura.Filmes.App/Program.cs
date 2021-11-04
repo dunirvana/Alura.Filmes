@@ -23,9 +23,31 @@ namespace Alura.Filmes.App
             //TestandoChaveUnica();
             //TestandoRestricaoCheck();
             //TestandoExtensionEnumClassificacaoIndicativa();
-            NovoTesteRestricaoCheck();
+            //NovoTesteRestricaoCheck();
+
+            ConsultarClientesEFuncionarios();
 
             Console.ReadLine();
+        }
+
+        private static void ConsultarClientesEFuncionarios()
+        {
+            using (var contexto = new AluraFilmesContexto())
+            {
+                contexto.LogSQLToConsole();
+
+                Console.WriteLine("Clientes:");
+                foreach (var cliente in contexto.Clientes)
+                {
+                    Console.WriteLine(cliente);
+                }
+
+                Console.WriteLine("\nFuncionários");
+                foreach (var func in contexto.Funcionarios)
+                {
+                    Console.WriteLine(func);
+                }
+            }
         }
 
         private static void NovoTesteRestricaoCheck()
