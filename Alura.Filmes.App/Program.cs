@@ -21,10 +21,40 @@ namespace Alura.Filmes.App
             //Consultaridiomas();
             //ConsultarFilmesEIdiomas();
             //TestandoChaveUnica();
-
-            TestandoRestricaoCheck();
+            //TestandoRestricaoCheck();
+            //TestandoExtensionEnumClassificacaoIndicativa();
+            NovoTesteRestricaoCheck();
 
             Console.ReadLine();
+        }
+
+        private static void NovoTesteRestricaoCheck()
+        {
+            using (var contexto = new AluraFilmesContexto())
+            {
+                contexto.LogSQLToConsole();
+
+                var filme = new Filme();
+                filme.Titulo = "Cassino Royale";
+                filme.Duracao = 120;
+                filme.AnoLancamento = "2000";
+                filme.Classificacao = ClassificacaoIndicativa.MaioresQue14;
+                filme.IdiomaFalado = contexto.Idiomas.First();
+                contexto.Entry(filme).Property("last_update").CurrentValue = DateTime.Now;
+
+                contexto.Filmes.Add(filme);
+                contexto.SaveChanges();
+
+                var filmeInserido = contexto.Filmes.First(f => f.Titulo == "Cassino Royale");
+                Console.WriteLine(filmeInserido.Classificacao);
+            }
+        }
+
+        private static void TestandoExtensionEnumClassificacaoIndicativa()
+        {
+            var m10 = ClassificacaoIndicativa.MaioresQue18;
+            Console.WriteLine(m10.ParaString());
+            Console.WriteLine("G".ParaValor());
         }
 
         private static void TestandoRestricaoCheck()
@@ -39,7 +69,7 @@ namespace Alura.Filmes.App
                 filme.Titulo = "Senhor dos Aneis";
                 filme.Duracao = 120;
                 filme.AnoLancamento = "2000";
-                filme.Classificacao = "Qualquer";
+                filme.Classificacao = ClassificacaoIndicativa.Livre;
                 filme.IdiomaFalado = idioma;
                 contexto.Entry(filme).Property("last_update").CurrentValue = DateTime.Now;
 
