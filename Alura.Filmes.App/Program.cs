@@ -24,10 +24,79 @@ namespace Alura.Filmes.App
             //TestandoRestricaoCheck();
             //TestandoExtensionEnumClassificacaoIndicativa();
             //NovoTesteRestricaoCheck();
+            //ConsultarClientesEFuncionarios();
+            //ConsultarAtoresQueMaisAtuaram();
+            //ConsultarAtoresQueMaisAtuaramComSqlCustomizado();
 
-            ConsultarClientesEFuncionarios();
+            ConsultarAtoresQueMaisAtuaramComSqlCustomizadoEmUmaView();
 
             Console.ReadLine();
+        }
+
+        private static void ConsultarAtoresQueMaisAtuaramComSqlCustomizadoEmUmaView()
+        {
+            using (var contexto = new AluraFilmesContexto())
+            {
+                contexto.LogSQLToConsole();
+
+                var sql = @"select a.* from actor a
+                            inner join top5_most_starred_actors filmes on filmes.actor_id = a.actor_id";
+
+                var atoresMaisAtuantes = contexto.Atores
+                    .FromSql(sql)
+                    .Include(a => a.Filmografia);
+
+                foreach (var ator in atoresMaisAtuantes)
+                {
+                    System.Console.WriteLine($"O ator {ator.PrimeiroNome} {ator.UltimoNome} atuou em {ator.Filmografia.Count} filmes.");
+                }
+
+            }
+        }
+
+        private static void ConsultarAtoresQueMaisAtuaramComSqlCustomizado()
+        {
+            using (var contexto = new AluraFilmesContexto())
+            {
+                contexto.LogSQLToConsole();
+
+                var sql = @"select a.*
+                        from actor a
+                          inner join
+                        (select top 5 a.actor_id, count(*) total
+                        from actor a
+                          inner join film_actor fa on fa.actor_id = a.actor_id
+                        group by a.actor_id
+                        order by total desc) filmes on filmes.actor_id = a.actor_id";
+
+                var atoresMaisAtuantes = contexto.Atores
+                    .FromSql(sql)
+                    .Include(a => a.Filmografia);
+
+                foreach (var ator in atoresMaisAtuantes)
+                {
+                    System.Console.WriteLine($"O ator {ator.PrimeiroNome} {ator.UltimoNome} atuou em {ator.Filmografia.Count} filmes.");
+                }
+
+            }
+        }
+
+        private static void ConsultarAtoresQueMaisAtuaram()
+        {
+            using (var contexto = new AluraFilmesContexto())
+            {
+                contexto.LogSQLToConsole();
+
+                var atoresMaisAtuantes = contexto.Atores
+                    .Include(a => a.Filmografia)
+                    .OrderByDescending(a => a.Filmografia.Count)
+                    .Take(5);
+
+                foreach (var ator in atoresMaisAtuantes)
+                {
+                    System.Console.WriteLine($"O ator {ator.PrimeiroNome} {ator.UltimoNome} atuou em {ator.Filmografia.Count} filmes");
+                }
+            }
         }
 
         private static void ConsultarClientesEFuncionarios()
